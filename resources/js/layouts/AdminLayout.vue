@@ -1,29 +1,56 @@
 <script setup>
 import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
+import logo  from '@/assets/JLGlamSalon.png'
 import {
   HomeIcon,
   CalendarIcon,
   ClipboardDocumentListIcon,
+  ChartBarIcon,
+  UserIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/vue/24/outline'
 
+const currentYear = ref(new Date().getFullYear())
 const mobileSidebarOpen = ref(false)
 const isActive = (name) => route().current(name)
 
 </script>
 
 <template>
-  <div class="flex min-h-screen">
 
+  <!-- Mobile Header / Toggle -->
+    <div class="md:hidden flex items-center justify-between p-4 bg-white border-b">
+      <button
+        @click="mobileSidebarOpen = true"
+        class="text-gray-700 hover:text-pink-600 focus:outline-none"
+      >
+        <!-- Hamburger Icon -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+  <div class="flex min-h-screen">
+    
     <!-- Sidebar -->
     <aside
-      class="w-64 bg-white border-r p-6 fixed top-16 bottom-0 left-0 overflow-y-auto hidden md:block"
+      class="w-64 h-screen bg-white border-r p-6 fixed overflow-y-auto hidden md:block"
     >
+    <div class="flex items-center gap-2 mb-5 mt-3">
+      <img :src="logo" alt="JL Glam Salon" class="w-12" />
+      <h1 class="text-lg font-bold">JL Glam Salon</h1>
+    </div>
+    <div class="border-b border-gray-300 mb-7"></div>
+
+
       <nav class="flex flex-col space-y-2">
         <Link
         :href="route('admin.dashboard')"
         :class="[
-          'flex items-center gap-3 rounded px-3 py-2 transition',
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
           isActive('admin.dashboard')
             ? 'bg-pink-100 text-pink-600 font-medium'
             : 'hover:bg-pink-50 hover:text-pink-500'
@@ -34,7 +61,7 @@ const isActive = (name) => route().current(name)
       <Link
         :href="route('admin.appointments')"
         :class="[
-          'flex items-center gap-3 rounded px-3 py-2 transition',
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
           isActive('admin.appointments')
             ? 'bg-pink-100 text-pink-600 font-medium'
             : 'hover:bg-pink-50 hover:text-pink-500'
@@ -45,24 +72,48 @@ const isActive = (name) => route().current(name)
        <Link
         :href="route('admin.services')"
         :class="[
-          'flex items-center gap-3 rounded px-3 py-2 transition',
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
           isActive('admin.services')
             ? 'bg-pink-100 text-pink-600 font-medium'
             : 'hover:bg-pink-50 hover:text-pink-500'
         ]">
-        <CalendarIcon class="h-5 w-5 text-current" />
+        <ClipboardDocumentListIcon class="h-5 w-5 text-current" />
         Services
       </Link>
       <Link
         :href="route('admin.reports')"
         :class="[
-          'flex items-center gap-3 rounded px-3 py-2 transition',
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
           isActive('admin.reports')
             ? 'bg-pink-100 text-pink-600 font-medium'
             : 'hover:bg-pink-50 hover:text-pink-500'
         ]">
-        <ClipboardDocumentListIcon class="h-5 w-5 text-current" />
-        Income Report
+        <ChartBarIcon class="h-5 w-5 text-current" />
+        Reports
+      </Link>
+      <Link
+        :href="route('profile.edit')"
+        :class="[
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
+          isActive('profile.edit')
+            ? 'bg-pink-100 text-pink-600 font-medium'
+            : 'hover:bg-pink-50 hover:text-pink-500'
+        ]">
+        <UserIcon class="h-5 w-5 text-current" />
+        Profile
+      </Link>
+      <Link
+        :href="route('logout')"
+        method="post"
+        as="button"
+        :class="[
+          'flex items-center gap-3 rounded-xl px-3 py-2 transition',
+          isActive('logout')
+            ? 'bg-pink-100 text-pink-600 font-medium'
+            : 'hover:bg-pink-50 hover:text-pink-500'
+        ]">
+        <ArrowRightOnRectangleIcon class="h-5 w-5 text-current" />
+        Logout
       </Link>
       </nav>
     </aside>
@@ -80,7 +131,7 @@ const isActive = (name) => route().current(name)
           @click="mobileSidebarOpen=false"
           :href="route('admin.dashboard')"
           :class="[
-            'flex items-center gap-3 rounded px-3 py-2 transition',
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
             isActive('admin.dashboard')
               ? 'bg-pink-100 text-pink-600 font-medium'
               : 'hover:bg-pink-50 hover:text-pink-500'
@@ -89,52 +140,87 @@ const isActive = (name) => route().current(name)
           <HomeIcon class="h-5 w-5 text-current" />
           Dashboard
         </Link>
-        \<Link
+        <Link
           @click="mobileSidebarOpen=false"
           :href="route('admin.appointments')"
           :class="[
-            'flex items-center gap-3 rounded px-3 py-2 transition',
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
             isActive('admin.appointments')
               ? 'bg-pink-100 text-pink-600 font-medium'
               : 'hover:bg-pink-50 hover:text-pink-500'
           ]"
         >
-          <HomeIcon class="h-5 w-5 text-current" />
+          <CalendarIcon class="h-5 w-5 text-current" />
           Appointments
         </Link>
           <Link
           @click="mobileSidebarOpen=false"
           :href="route('admin.services')"
           :class="[
-            'flex items-center gap-3 rounded px-3 py-2 transition',
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
             isActive('admin.services')
               ? 'bg-pink-100 text-pink-600 font-medium'
               : 'hover:bg-pink-50 hover:text-pink-500'
           ]"
         >
-          <HomeIcon class="h-5 w-5 text-current" />
+          <ClipboardDocumentListIcon class="h-5 w-5 text-current" />
           Services
         </Link>
-              <Link
+        <Link
           @click="mobileSidebarOpen=false"
           :href="route('admin.reports')"
           :class="[
-            'flex items-center gap-3 rounded px-3 py-2 transition',
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
             isActive('admin.reports')
               ? 'bg-pink-100 text-pink-600 font-medium'
               : 'hover:bg-pink-50 hover:text-pink-500'
           ]"
         >
-          <HomeIcon class="h-5 w-5 text-current" />
-          Income Report
+          <ChartBarIcon class="h-5 w-5 text-current" />
+          Reports
+        </Link>
+         <Link
+          @click="mobileSidebarOpen=false"
+          :href="route('profile.edit')"
+          :class="[
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
+            isActive('profile.edit')
+              ? 'bg-pink-100 text-pink-600 font-medium'
+              : 'hover:bg-pink-50 hover:text-pink-500'
+          ]"
+        >
+          <UserIcon class="h-5 w-5 text-current" />
+         Profile
+        </Link>
+         <Link
+          @click="mobileSidebarOpen=false"
+          :href="route('logout')"
+          method="post"
+          as="button"
+          :class="[
+            'flex items-center gap-3 rounded-xl px-3 py-2 transition',
+            isActive('logout')
+              ? 'bg-pink-100 text-pink-600 font-medium'
+              : 'hover:bg-pink-50 hover:text-pink-500'
+          ]"
+        >
+          <ArrowRightOnRectangleIcon class="h-5 w-5 text-current" />
+          Logout
         </Link>
         </nav>
       </aside>
     </div>
 
     <!-- Main Content -->
-    <main ref="scrollContainer" class="flex-1 md:ml-64 pt-6 px-6 bg-gray-50">
-      <slot />
-    </main>
-  </div>
+    <div class="flex-1 md:ml-64 flex flex-col bg-gray-100 min-h-screen">
+      <main ref="scrollContainer" class="flex-1 p-6">
+        <slot />
+      </main>
+      <footer class="bg-gray-100 p-6 border">
+          <p class="text-sm text-gray-500 mt-1 text-center">
+          © {{ currentYear }} JL Glam Salon. All Rights Reserved
+          </p>
+      </footer>
+    </div>
+ </div>
 </template>
