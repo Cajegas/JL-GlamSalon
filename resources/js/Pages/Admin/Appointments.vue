@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import AppointmentsCalendar from '@/Components/AppointmentsCalendar.vue'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import Modal from '@/Components/Modal.vue'
 import { Head, usePage, router } from '@inertiajs/vue3'
@@ -10,69 +10,142 @@ const page = usePage()
 
 const appointments = computed(() => page.props.appointments || []);
 
-const filters = ref({
-  status: page.props.filters?.status || '',
-  date: page.props.filters?.date || '',
+// const filters = ref({
+//   status: page.props.filters?.status || '',
+//   date: page.props.filters?.date || '',
+// })
+
+// const selectedAppointment = ref('')
+// const successMessage = ref('')
+// const errorMessage = ref('')
+
+const showTextarea = ref(false)
+const showEditDiv = ref(false)
+const selectedEvent = ref(null)
+const showModal = ref(false)
+const newStatus = ref('')
+const message = ref('')
+
+
+const handleAppointmentClick = (event) => {
+  selectedEvent.value = event
+  showModal.value = true
+}
+
+const formattedAppointment = computed(() => {
+  if (!selectedEvent.value) return { dateLine: '', timeLine: '' }
+
+  const s = new Date(selectedEvent.value.start)
+  const e = new Date(selectedEvent.value.end)
+
+  return {
+    dateLine: s.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    }),
+    timeLine: `${s.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })} – ${e.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })}`
+  }
 })
 
-const showModal = ref(false)
-const selectedAppointment = ref('')
-const newStatus = ref('')
-const successMessage = ref('')
-const errorMessage = ref('')
+const formatDate = (date) => {
+  if (!date) return ''
 
- function openModal(appt) {
-  selectedAppointment.value = appt
-  newStatus.value = appt.status
-  showModal.value = true
+  const d = date instanceof Date ? date : new Date(date)
 
- }
+  return d.toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
+//  function openModal(appt) {
+//   selectedAppointment.value = appt
+//   newStatus.value = appt.status
+//   showModal.value = true
+
+//  }
 
  function closeModal() {
     showModal.value = false
-    errorMessage.value = ''
-    successMessage.value = ''
+    showTextarea.value = false
+    showEditDiv.value = false
     newStatus.value = ''
-    selectedAppointment.value = null
 }
 
+watch([showModal, showEditDiv], ([modal, editDiv]) => {
+  if (!modal) {
+    newStatus.value = ''
+    showTextarea.value = false
+    showEditDiv.value = false
+  } else if (!editDiv) {
+    newStatus.value = ''
+  }
+})
 
- function updateStatus(){
-  if (!selectedAppointment.value) return
+watch(newStatus, (value) => {
+  showTextarea.value = value === 'cancelled'
 
-  if (newStatus.value === selectedAppointment.value.status) {
-    errorMessage.value = 'Selected status is the same as current status.'
-    return
-  } 
+  if(showTextarea.value) {
+    message.value = `Hello ${selectedEvent.value.title},
+        Thank you for your appointment scheduled on ${formatDate(selectedEvent.value.start)}.
+        Unfortunately, we are unable to proceed due to limited resources at the selected date.
+        You may book another available schedule at your convenience.
 
-  router.put(route('admin.appointments.update', selectedAppointment.value.id),
-  {status: newStatus.value}, 
-  {
-    onSuccess: () => {
-      successMessage.value = 'Appointment status updated successfully.'
-      errorMessage.value = ''
+        Thank you for your understanding.
 
-      selectedAppointment.value.status = newStatus.value
+        Best Regards,
+        JL Glam Salon`
+  }else {
+    message.value = ''
+  }
+})
 
-      setTimeout(() => {
-        successMessage.value = ''
-        closeModal()
-      }, 2000)
+//  function updateStatus(){
+//   if (!selectedAppointment.value) return
+
+//   if (newStatus.value === selectedAppointment.value.status) {
+//     errorMessage.value = 'Selected status is the same as current status.'
+//     return
+//   } 
+
+//   router.put(route('admin.appointments.update', selectedAppointment.value.id),
+//   {status: newStatus.value}, 
+//   {
+//     onSuccess: () => {
+//       successMessage.value = 'Appointment status updated successfully.'
+//       errorMessage.value = ''
+
+//       selectedAppointment.value.status = newStatus.value
+
+//       setTimeout(() => {
+//         successMessage.value = ''
+//         closeModal()
+//       }, 2000)
 
      
-    },
-     onError: (errors) => {
-        errorMessage.value = errors.status || 'Failed to update status.';
-      },
-  })
- }
+//     },
+//      onError: (errors) => {
+//         errorMessage.value = errors.status || 'Failed to update status.';
+//       },
+//   })
+//  }
 
-function applyFilters() {
-  router.get(route('admin.appointments'), filters.value, { preserveState: true, replace: true, });
-}
+// function applyFilters() {
+//   router.get(route('admin.appointments'), filters.value, { preserveState: true, replace: true, });
+// }
 
-watch(newStatus, () => (errorMessage.value = ''))
-watch(filters, applyFilters)
+// watch(newStatus, () => (errorMessage.value = ''))
+// watch(filters, applyFilters)
 
 </script>
 
@@ -83,104 +156,57 @@ watch(filters, applyFilters)
     <!-- MAIN CONTENT ONLY -->
       <div class="col-span-full justify-between flex shadow rounded-xl bg-white p-6 mb-6">
         <h2 class="text-lg md:text-2xl font-semibold">Manage Appointments</h2>
+      </div> 
 
-        <!-- Filters -->
-        <div class="flex flex-wrap gap-4">
-          <select v-model="filters.status" @change="applyFilters"
-                  class="border rounded-xl px-7 py-1">
-            <option value="">All Status </option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-          <input type="date" v-model="filters.date" @change="applyFilters"
-                class="border rounded-xl px-3 py-1" />
-        </div>
-      </div>
-
-      <!-- Appointments Table -->
-      <div class="overflow-x-auto bg-white shadow rounded-lg">
-        <table class="w-full table-auto">
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="px-4 py-2">Customer</th>
-              <th class="px-4 py-2">Date & Time</th>
-              <th class="px-4 py-2">Services</th>
-              <th class="px-4 py-2">Status</th>
-              <th class="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="appt in appointments" :key="appt.id" class="border-b hover:bg-pink-100">
-              <td class="px-4 py-2">{{ appt.user.name }}</td>
-              <td class="px-4 py-2">
-                {{ new Date(appt.appointment_date).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) }}
-                at {{ new Date(`${appt.appointment_date}T${appt.appointment_time}`).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) }}
-              </td>
-              <td class="px-4 py-2">{{ appt.services.map(s => s.name).join(', ') }}</td>
-              <td :class="['px-4 py-2 capitalize',
-               appt.status === 'confirmed' ? 'text-green-600' :
-               appt.status === 'cancelled' ? 'text-red-600' :
-               appt.status === 'completed' ? 'text-blue-600' :
-               'text-black'
-              ]">{{ appt.status }}</td>
-              <td class="px-4 py-2">
-                <button 
-                  v-if="appt.status !== 'completed'" @click="openModal(appt)" class="bg-pink-600 text-white px-3 py-1 rounded-xl hover:bg-pink-700">
-                  Edit Status
-                </button>
-
-                <span v-else class="text-gray-400 italic">No Actions</span>
-              </td>
-            </tr>
-
-            <tr v-if="appointments.length === 0">
-              <td colspan="5" class="text-center py-4 text-gray-500">No appointments found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
- 
+      <AppointmentsCalendar :appointments="appointments" @appointment-selected="handleAppointmentClick"/>
     </AdminLayout>
-    <Modal :show="showModal" @close="closeModal"
->
-    
-      <div class="pt-8 pl-8 sm:pl-10">
-          <h2 class="text-lg font-bold mb-4 text-pink-800">
-            Update Status 
-          </h2>
-      </div>
-      <div class="text-center pt-3 pb-10">
-        <p class="mb-4 text-l" v-if="selectedAppointment">
-          Change status for
-          <strong>{{ selectedAppointment?.user?.name }}</strong>'s appointment:
-        </p>
-          <select v-if="selectedAppointment" v-model="newStatus" class="border rounded-xl px-7 py-1 text-sm">
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
 
-          <p v-if="successMessage" class="mt-4 text-green-600 font-medium">
-              {{ successMessage }}
-          </p>
-           <p v-if="errorMessage" class="mt-4 text-red-600 font-medium">
-              {{ errorMessage }}
-          </p>
+     <Modal :show="showModal" @close="showModal = false">
+        <h3 class="text-center text-lg md:text-xl font-semibold mt-5">Appointment Details</h3>
 
-      </div>
+        <div class="space-y-2 py-4 px-6">
 
-          <div class="flex justify-end gap-2 pr-10 pb-7">
-            <button @click="closeModal" class="px-3 py-1 bg-gray-300 rounded-xl">
-                Close
-            </button>
-            
-            <button v-if="selectedAppointment" @click="updateStatus()" class="px-3 py-1 bg-pink-600 text-white rounded-xl hover:bg-pink-700">
-              Update
-            </button>
-          </div>
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2 space-x-1 md:py-2">
+                <strong>Name:</strong>
+                <input class="border border-gray-200 rounded-xl w-full ml-2" disabled :value="selectedEvent?.title"> 
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2 space-x-1 md:py-2">
+                <strong>Time:</strong>
+                <input class="border border-gray-200 rounded-xl w-full ml-2" disabled :value="formattedAppointment.dateLine + ' - ' + formattedAppointment.timeLine"> 
+            </div>
+               
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2 space-x-1 md:py-2"> 
+                <strong>Services:</strong>
+                <input class="border border-gray-200 rounded-xl w-full ml-2" disabled :value="selectedEvent?.extendedProps.services">
+            </div>
+               
+            <div class="flex flex-col md:flex-row md:items-center md:space-x-2 space-x-1 md:py-2 capitalize gap-2">
+                <strong>Status:</strong>
+                <span class="rounded-xl text-white text-center px-3 ml-2 inline-block"  :style="{ backgroundColor: selectedEvent.extendedProps.color }">
+                    {{ selectedEvent?.extendedProps?.status}}
+                </span>
+                <button @click="showEditDiv = !showEditDiv" class="rounded-lg hover:bg-pink-600 hover:text-white px-2"><span class="underline">Edit Status</span></button>
+            </div>
+            <div v-if="showEditDiv" class="border rounded-lg p-2 flex md:justify-center flex-col">
+                <select v-model="newStatus" class="border-gray-300 rounded-xl">
+                  <option value="">Select Status</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <div v-if="showTextarea" class="pb-2 pt-2">
+                  <span class="italic">Message to customer:</span>
+                  <textarea class="border border-gray-200 rounded-xl w-full p-3 resize-none" rows="4" v-model="message">
+                  </textarea>
+                </div>
+            </div>
+           
+              
+            <div class="flex justify-end gap-4 pb-2 pt-3">
+                <button @click="closeModal" class="px-3 py-2 bg-gray-300 rounded-xl">Close</button>
+                <button v-if="newStatus" @click="" class="bg-pink-600 text-white py-2 px-3 rounded-xl hover:bg-pink-700">Update Status</button>
+            </div>
+
+        </div>
     </Modal>
 </template>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Customer\CustomerBookController;
@@ -103,5 +104,7 @@ Route::middleware('auth')->prefix('customer')->name('customer.')->group(function
     Route::post('/appointments/{appointment}/cancel', [CustomerBookController::class, 'cancel'])->name('appointments.cancel');
 
 });
+
+Route::get('send-email', [MailController::class, 'sendEmail']);
 
 require __DIR__.'/auth.php';

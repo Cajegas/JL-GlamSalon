@@ -1,5 +1,4 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { Head, usePage } from '@inertiajs/vue3'
 import { ref, onMounted, onUnmounted } from 'vue'
@@ -55,19 +54,19 @@ onUnmounted(() => {
         <p class="text-gray-500 italic text-sm md:text-lg">{{ currentDateTime }}</p>
       </div>
    
-      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl">
         <h3 class="font-semibold text-gray-700">Today's Appointments</h3>
         <p class="mt-2 text-gray-500 italic">{{ page.props.todaysAppointments ?? 0 }} confirmed appointment/s for today.</p>
        
       </div>
 
-       <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl"> 
+       <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl"> 
             <h3 class="font-semibold text-gray-700">Monthly Income</h3> 
             <p v-if="page.props.monthlyIncome" class="mt-2 text-gray-500 italic">₱{{ formatPrice(page.props.monthlyIncome)}}</p> 
             <p v-else class="mt-2 text-gray-500 italic">No income recorded this month.</p>
         </div> 
 
-         <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+         <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-100 shadow-sm transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl">
             <h3 class="font-semibold text-gray-700">Pending Appointments</h3> 
             <p class="mt-2 text-gray-500 italic">{{ page.props.pendingAppointments ?? 0 }} pending appointment/s as of now.</p> 
         </div>
@@ -76,11 +75,11 @@ onUnmounted(() => {
 
     <div class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
-      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-50 min-h-[400px] shadow-sm transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-50 min-h-[400px] shadow-sm transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl">
         <h3 class="font-semibold text-gray-700 text-lg mb-4">Monthly Report</h3>
       </div>
 
-      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-50 min-h-[400px] shadow-sm transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+      <div class="bg-white shadow rounded-xl p-6 hover:bg-pink-50 min-h-[400px] shadow-sm transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl">
         <h3 class="font-semibold text-gray-700 text-lg mb-4">Customer Report</h3>
       </div>
 

@@ -26,6 +26,19 @@ const serviceToDelete = ref(null)
 // Utilities
 const formatPrice = (value) => Number(value).toLocaleString()
 
+const formatDuration = (minutes) => {
+  const hrs = Math.floor(minutes / 60)
+  const mins = minutes % 60
+
+  if(hrs && mins){
+    return `${hrs}h ${mins}m`
+  }else if(hrs) {
+    return `${hrs}h`
+  }else {
+    return `${mins}m`
+  }
+}
+
 const search = ref('')
 
 const filteredServices = computed(() => {
@@ -60,24 +73,6 @@ const form = useForm({
   duration: ''
 })
 
-const allFieldsFilled = computed(() => {
-  return form.category && form.name && form.price && form.duration
-
-})
-
-watch(allFieldsFilled, (filled) =>{
-  if (filled) {
-    errorMessage.value = ''
-  }
-})
-
-watch(showServiceModal, (show) => {
-  if(!show) {
-    errorMessage.value = ''
-    form.reset()
-  }
-})
-
 // Edit a service
 const editService = (service) => {
   showServiceModal.value = true
@@ -92,6 +87,7 @@ const editService = (service) => {
 // Cancel editing
 const cancelEdit = () => {
   form.reset()
+  form.clearErrors()
   editing.value = false
   showServiceModal.value = false
 }
@@ -121,10 +117,8 @@ const submit = () => {
         successMessage.value = 'Service updated successfully!'
         setTimeout(() => {
           successMessage.value = ''
-          errorMessage.value = ''
         }, 3000)
       },
-      onError: (errors) => errorMessage.value = 'Complete all fields'
     })
   } else {
     form.post(route('admin.services.store'), {
@@ -134,10 +128,8 @@ const submit = () => {
         successMessage.value = 'Service created successfully!'
         setTimeout(() => {
           successMessage.value = ''
-          errorMessage.value = ''
         }, 3000)
       },
-      onError: (errors) =>  errorMessage.value = 'Complete all fields'
     })
   }
 }
@@ -159,12 +151,17 @@ const deleteService = () => {
       successMessage.value = 'Service deleted successfully!'
       setTimeout(() => {
         successMessage.value = ''
-        errorMessage.value = ''
       }, 3000)
     },
     onError: (errors) =>   errorMessage.value = 'Unable to delete the service.'
   })
 }
+
+watch(showServiceModal , (show) => {
+  if(!show){
+    form.clearErrors()
+  }
+})
 </script>
 
 <template>
@@ -197,6 +194,10 @@ const deleteService = () => {
             {{ successMessage }}
           </div>
 
+          <div v-if="errorMessage" class="bg-red-100 text-red-800 p-2 rounded-xl mb-4">
+            {{ errorMessage }}
+          </div>
+
 
           <div v-if="Object.keys(servicesByCategory).length === 0" class=" text-center">
             <hr class="my-6 border-gray-300"/>
@@ -205,7 +206,7 @@ const deleteService = () => {
           
           <div v-else>
             <div v-for="(services, category) in servicesByCategory" :key="category">
-              <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ category }}</h3>
+              <h3 class="text-lg font-semibold text-gray-700 mt-4 mb-4">{{ category }}</h3>
 
               <div v-if="services.length === 0" class="text-center">
                 <hr class="my-6 border-gray-300"/>
@@ -220,7 +221,7 @@ const deleteService = () => {
                 >
                   <div>
                     <p class="font-semibold">{{ service.name }}</p>
-                    <p class="text-sm text-gray-500">{{ service.duration }} mins</p>
+                    <p class="text-sm text-gray-500">{{ formatDuration(service.duration) }} </p>
                   </div>
 
                   <div class="flex items-center space-x-2">
@@ -281,38 +282,45 @@ const deleteService = () => {
         <template #default>
       <!-- ADD / EDIT SERVICE FORM -->
 
-         <!-- Error message -->
-          <div v-if="errorMessage" class="bg-red-100 text-red-800 mx-2 m-2 p-2 text-center rounded-xl">
-            {{ errorMessage }}
-          </div>
-
           <form @submit.prevent="submit" ref="formRef" class="bg-white p-4 rounded-xl shadow space-y-4">
             <div>
               <label class="block text-sm font-medium">Category <span class="text-red-800 text-md">*</span></label>
-              <select v-model="form.category" class="w-full border rounded-xl p-2">
+              <select v-model="form.category" @change="form.clearErrors('category')" class="w-full border rounded-xl p-2 focus:outline-none transition"
+                :class="form.errors.category ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+                  : 'border-gray-300 focus:ring-2 focus:ring-pink-200 focus:border-pink-500'">
                 <option value="">Select</option>
                 <option>Hair</option>
                 <option>Nail</option>
                 <option>Makeup</option>
               </select>
+              <p v-if="form.errors.category" class="text-red-500 text-sm mt-1"> {{ form.errors.category }} </p>
             </div>
 
             <div>
               <label class="block text-sm font-medium">Service Name <span class="text-red-800 text-md">*</span></label>
-              <input v-model="form.name" class="w-full border rounded-xl p-2" />
+              <input v-model="form.name" @input="form.clearErrors('name')" class="w-full border rounded-xl p-2 focus:outline-none transition" 
+              :class="form.errors.name ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+                  : 'border-gray-300 focus:ring-2 focus:ring-pink-200 focus:border-pink-500'"/>
+               <p v-if="form.errors.name" class="text-red-500 text-sm mt-1"> {{ form.errors.name }} </p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium">Price <span class="text-red-800 text-md">*</span></label>
-                <input type="number" v-model="form.price" class="w-full border rounded-xl p-2" />
+                <input type="number" v-model="form.price" @input="form.clearErrors('price')" class="w-full border rounded-xl p-2 focus:outline-none transition" 
+                :class="form.errors.price ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+                  : 'border-gray-300 focus:ring-2 focus:ring-pink-200 focus:border-pink-500'"/>
+                 <p v-if="form.errors.price" class="text-red-500 text-sm mt-1"> {{ form.errors.price }} </p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium">Duration (min) <span class="text-red-800 text-md">*</span></label>
-                <input type="number" v-model="form.duration" class="w-full border rounded-xl p-2" />
+                <input type="number" v-model="form.duration" @input="form.clearErrors('duration')" class="w-full border rounded-xl p-2 focus:outline-none transition" 
+                :class="form.errors.duration ? 'border-red-500 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+                  : 'border-gray-300 focus:ring-2 focus:ring-pink-200 focus:border-pink-500'"/>
+                 <p v-if="form.errors.duration" class="text-red-500 text-sm mt-1"> {{ form.errors.duration }} </p>
               </div>
-            </div>
+            </div> 
 
             <div class="flex space-x-2">
                <button type="button" @click="cancelEdit"

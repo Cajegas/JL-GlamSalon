@@ -16,16 +16,16 @@ const endDate = ref(null)
 <template>
   <Head title="Reports" />
     <AdminLayout>
-    <div class="p-6 space-y-6">
-        <div class="col-span-full flex justify-between items-center shadow rounded-xl bg-white p-5">
+    <div class="space-y-6">
+        <div class="flex col-span-full flex-col md:flex-row justify-between items-center shadow rounded-xl bg-white p-5">
             <h2 class="text-lg md:text-2xl font-semibold">Reports</h2>
-            <div class="flex flex-wrap gap-4">
-                <select class="rounded-xl">
+            <div class="flex flex-col md:flex-row flex-wrap gap-4 pt-3 md:pt-0">
+                <select class="rounded-xl text-sm md:text-base">
                     <option value="monthly">Monthly</option>
                     <option value="Weekly">Weekly</option>
                 </select>
-                <Datepicker v-model="startDate" placeholder="Start Date" class="border rounded-xl p-2"/>
-                <Datepicker v-model="endDate" placeholder="End Date" class="border rounded-xl p-2"/>
+                <Datepicker v-model="startDate" placeholder="Start Date" class="border rounded-xl p-2 text-sm md:text-base"/>
+                <Datepicker v-model="endDate" placeholder="End Date" class="border rounded-xl p-2 text-sm md:text-base"/>
             </div>
         </div>
 
@@ -55,7 +55,7 @@ const endDate = ref(null)
         </div>
 
         <div class="bg-white shadow rounded-xl p-4">
-            <h3 class="text-lg font-semibold mb-2">Top Services</h3>
+            <h3 class="text-md md:text-lg font-semibold mb-2">Top Services</h3>
             <ul class="divide-y divide-gray-200">
             <li class="flex justify-between">
                 <span></span>
@@ -66,7 +66,7 @@ const endDate = ref(null)
         </div>
 
          <div class="bg-white shadow rounded-xl p-4">
-            <h3 class="text-lg font-semibold mb-2">Top Customers</h3>
+            <h3 class="text-md md:text-lg font-semibold mb-2">Top Customers</h3>
             <ul class="divide-y divide-gray-200">
                 <li class="flex justify-between">
                 <span></span>
