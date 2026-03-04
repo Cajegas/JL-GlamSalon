@@ -84,13 +84,13 @@ onMounted(() => {
             class="w-full h-[50vh] md:h-[550px] bg-left bg-cover bg-no-repeat relative bg-[center_40%] shadow-lg"
             :style="{backgroundImage: `url(${model3})`}">
             <div class="absolute inset-0 bg-black/30"></div>
-                <div class="relative flex-col z-10 flex items-center justify-center h-full gap-3 transition-all duration-700 ease-out"
+                <div class="relative flex-col z-10 flex items-center justify-center h-full gap-2 transition-all duration-700 ease-out mx-4"
                     :class="showHeading ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'">
-                    <h1 class="text-white text-1xl md:text-3xl font-bold text-center">
+                    <h1 class="text-white text-1xl md:text-3xl font-sans font-bold text-center">
                     WELCOME TO JL GLAM SALON
                     </h1>
-                    <h1 class="text-white text-2xl md:text-5xl font-bold text-center">
-                    Makeup, Beautiful Hair & Nails — Made Easy!
+                    <h1 class="text-white text-2xl md:text-5xl font-bold font-serif text-center md:leading-relaxed">
+                        Complete Beauty Care <br> Hair, Nails, Makeup, Brows & Lashes.
                     </h1>
                      <Link
                         :href="$page.props.auth?.user ? route('dashboard') : route('login')"
@@ -106,18 +106,18 @@ onMounted(() => {
             <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-center gap-12">
 
                 <div class="md:w-2/5 text-center md:text-left space-y-6">
-                    <h2 class="text-2xl md:text-3xl font-semibold">
+                    <h2 class="text-2xl font-serif md:text-3xl font-semibold">
                         Why Our Clients Choose Us
                     </h2>
 
                     <div class="w-16 h-1 bg-pink-400 rounded mx-auto md:mx-0"></div>
 
-                    <p>
+                    <p class="font-semibold">
                         JL Glam Salon brings expert stylists and personalized care together in a warm, welcoming atmosphere where beauty meets confidence.
 
                     </p>
 
-                    <p>
+                    <p class="text-gray-500">
                         From hair and nails to flawless makeup, every service is designed to make you look and feel your best. 
                         Step in, relax, and let us pamper you with style and confidence.
                     </p>
@@ -136,75 +136,104 @@ onMounted(() => {
 
             </div>
 
-            </section>
+        </section>
 
-            <section class="flex flex-col items-center bg-gray-100 px-6 py-14">
-                <div class="text-center md:w-1/2 space-y-5">
-                    <p class="text-2xl md:text-3xl font-semibold">Our Services</p>
-                    <div class="flex flex-col items-center justify-center">
-                        <div class="w-16 h-1 bg-pink-400 rounded mx-auto md:mx-0"></div>
-                        <p class="p-6">We offer haircuts & styling, coloring, eyebrow and eyelash tinting, perming, hair straightening, 
-                        professional nail care, and flawless makeup services — all tailored to enhance your beauty and style.</p>
-                    </div>
-                </div>
-                <div class="flex flex-col md:flex-row gap-10 pt-8">
-                    <div class="md:w-1/2 flex items-center justify-between gap-6">
-                        <p class="text-gray-500 text-base leading-relaxed max-w-sm">Precision cuts, custom color, styling, perming, and straightening — tailored to elevate your everyday look.</p>
-                        <div class="flex flex-col items-center text-center flex-shrink-0">
+        <section class="flex flex-col items-center bg-gray-100 px-6 py-14">
+
+            <div class="text-center md:w-1/2 space-y-6 mb-6">
+                <p class="text-2xl md:text-3xl font-serif font-semibold">Our Services</p>
+                <div class="w-16 h-1 bg-pink-400 rounded mx-auto"></div>
+                <p class="text-gray-600">
+                    We offer haircuts & styling, coloring, eyebrow and eyelash tinting, perming, hair straightening,
+                    professional nail care, and flawless makeup services — all tailored to enhance your beauty and style.
+                </p>
+            </div>
+
+            <div class="w-full max-w-6xl mt-10 md:mt-14">
+
+                <div class="flex flex-col md:flex-row items-center">
+
+                    <div class="md:w-1/2 flex flex-col md:flex-row items-center md:justify-between text-center md:text-left gap-6 px-4">
+
+                        <div class="flex flex-col items-center text-center md:order-2">
                             <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
                                 <ScissorsIcon class="w-10 h-10 text-pink-800"/>
                             </div>
-                            <span class="mt-3 text-md font-medium font-semibold">
-                                Hair Services
-                            </span>
+                            <span class="mt-3 font-semibold">Hair Services</span>
                         </div>
-                    </div>
-                    <div class="hidden md:block w-px h-32 bg-gray-300"></div>
 
-                    <div class="md:w-1/2 flex items-center justify-between gap-6">
-                        <div class="flex flex-col items-center text-center flex-shrink-0">
-                            <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
-                                <SparklesIcon class="w-10 h-10 text-pink-800"/>
-                            </div>
-                            <span class="mt-3 text-md font-medium font-semibold">
-                                Brows & Lashes
-                            </span>         
-                        </div>
-                        <p class="text-gray-500 text-base leading-relaxed max-w-sm text-right">Shaping, tinting, and lifting treatments to define your eyes and frame your face beautifully.</p>
-                    </div>
-                </div>
-                <div class="hidden md:flex items-center gap-16 w-3/4 p-8">
-                    <div class="w-full md:w-1/2 h-px bg-gray-300 my-8"></div>
-                    <div class="w-1/2 h-px bg-gray-300 my-8"></div>
-                </div>
-                <div class="flex flex-col md:flex-row gap-10">
-                    <div class="md:w-1/2 flex items-center justify-between gap-6">
-                        <p class="text-gray-500 text-base leading-relaxed max-w-sm">Soft glam to full glam — expertly applied for any occasion, enhancing your natural beauty with flawless, long-lasting results.</p>
-                        <div class="flex flex-col items-center text-center flex-shrink-0">
-                            <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
-                                <PaintBrushIcon class="w-10 h-10 text-pink-800"/>
-                            </div>
-                            <span class="mt-3 text-md font-medium font-semibold">
-                                Makeup
-                            </span>
-                        </div>
-                    </div>
-                    <div class="hidden md:block w-px h-32 bg-gray-300"></div>
+                        <p class="text-gray-500 max-w-sm md:order-1">
+                            Precision cuts, custom color, styling, perming, and straightening — tailored to elevate your everyday look.
+                        </p>
 
-                    <div class="md:w-1/2 flex items-center justify-between gap-6">
-                        <div class="flex flex-col items-center text-center flex-shrink-0">
+                        <div class="w-full h-px bg-gray-300 m-6 md:hidden"></div>
+                    </div>
+
+                    <div class="hidden md:block w-px h-32 bg-gray-300 m-4"></div>
+
+                    <div class="md:w-1/2 flex flex-col md:flex-row items-center md:justify-between text-center md:text-right gap-6 px-4">
+
+                        <div class="flex flex-col items-center text-center">
                             <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
                                 <EyeIcon class="w-10 h-10 text-pink-800"/>
                             </div>
-                            <span class="mt-3 text-md font-medium font-semibold">
-                                Nail Care
-                            </span>         
+                            <span class="mt-3 font-semibold">Brows & Lashes</span>
                         </div>
-                        <p class="text-gray-500 text-base leading-relaxed max-w-sm text-right">Clean, polished manicures and pedicures with gel finishes and refined nail art for a flawless touch.</p>
+
+                        <p class="text-gray-500 max-w-sm mb-4">
+                            Shaping, tinting, and lifting treatments to define your eyes and frame your face beautifully.
+                        </p>
+
+                    </div>
+
+                    <div class="w-full h-px bg-gray-300 m-7 md:hidden"></div>
+
+                </div>
+
+                <div class="hidden md:flex justify-between items-center gap-16 w-full p-3"> 
+                    <div class="w-1/2 h-px bg-gray-300 my-8"></div> 
+                    <div class="w-1/2 h-px bg-gray-300 my-8"></div> 
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center">
+
+                    <div class="md:w-1/2 flex flex-col md:flex-row items-center md:justify-between text-center md:text-left gap-6 px-4">
+
+                        <div class="flex flex-col items-center text-center md:order-2">
+                            <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
+                                <PaintBrushIcon class="w-10 h-10 text-pink-800"/>
+                            </div>
+                            <span class="mt-3 font-semibold">Makeup</span>
+                        </div>
+
+                        <p class="text-gray-500 max-w-sm md:order-1">
+                            Soft glam to full glam — expertly applied for any occasion with flawless, long-lasting results.
+                        </p>
+
+                        <div class="w-full h-px bg-gray-300 m-6 md:hidden"></div>
+                    </div>
+
+                    <div class="hidden md:block w-px h-32 bg-gray-300 m-4"></div>
+
+                    <div class="md:w-1/2 flex flex-col md:flex-row items-center md:justify-between text-center md:text-right gap-6 px-4">
+
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center">
+                                <SparklesIcon class="w-10 h-10 text-pink-800"/>
+                            </div>
+                            <span class="mt-3 font-semibold">Nail Care</span>
+                        </div>
+
+                        <p class="text-gray-500 max-w-sm">
+                            Clean, polished manicures and pedicures with gel finishes and refined nail art.
+                        </p>
+
                     </div>
                 </div>
-            </section>
-                
+
+            </div>
+
+        </section>
 
         <footer class="py-10 text-center text-sm text-gray-500">
             © {{ new Date().getFullYear() }} JL Glam Salon. All rights reserved.
